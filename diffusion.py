@@ -112,7 +112,9 @@ class Diffusion(L.LightningModule):
         mask_index=self.mask_index)
     elif self.config.backbone == 'hf_dit':
       self.backbone = transformers.AutoModelForMaskedLM.from_pretrained(
-        config.eval.checkpoint_path, cache_dir="/data1/fangping/DLcache", trust_remote_code=True)
+        config.eval.checkpoint_path,
+        cache_dir=config.data.cache_dir,
+        trust_remote_code=True)
     else:
       raise ValueError(
         f'Unknown backbone: {self.config.backbone}')
@@ -143,13 +145,16 @@ class Diffusion(L.LightningModule):
 
     # generative perplexity
     self.gen_ppl_metric = Perplexity()
-    self.eval_model_tokenizer = transformers.AutoTokenizer.\
-      from_pretrained(self.gen_ppl_eval_model_name_or_path, cache_dir="/data1/fangping/DLcache")
-    if self.eval_model_tokenizer.pad_token is None:
-      self.eval_model_tokenizer.pad_token =\
-          self.eval_model_tokenizer.eos_token
-      self.eval_model_tokenizer.pad_token_id =\
-          self.eval_model_tokenizer.eos_token_id
+    self.eval_model_tokenizer = None
+    if self.config.eval.compute_generative_perplexity:
+      self.eval_model_tokenizer = transformers.AutoTokenizer.from_pretrained(
+        self.gen_ppl_eval_model_name_or_path,
+        cache_dir=self.config.data.cache_dir)
+      if self.eval_model_tokenizer.pad_token is None:
+        self.eval_model_tokenizer.pad_token =\
+            self.eval_model_tokenizer.eos_token
+        self.eval_model_tokenizer.pad_token_id =\
+            self.eval_model_tokenizer.eos_token_id
 
     self.noise = noise_schedule.get_noise(self.config,
                                           dtype=self.dtype)
@@ -568,7 +573,8 @@ class Diffusion(L.LightningModule):
     """
     os.environ['TOKENIZERS_PARALLELISM'] = 'false'
     eval_model = transformers.AutoModelForCausalLM.from_pretrained(
-      self.gen_ppl_eval_model_name_or_path, cache_dir="/data1/fangping/DLcache").eval()
+      self.gen_ppl_eval_model_name_or_path,
+      cache_dir=self.config.data.cache_dir).eval()
     if max_length is None:
       max_length = self.config.model.length
     if 'llama2' not in self.gen_ppl_eval_model_name_or_path:

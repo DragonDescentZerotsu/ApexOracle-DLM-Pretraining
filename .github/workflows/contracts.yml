@@ -1,0 +1,24 @@
+name: source-contracts
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: requirements-contracts.txt
+      - name: Install source-contract dependencies
+        run: python -m pip install -r requirements-contracts.txt
+      - name: Compile source
+        run: python -m compileall -q .
+      - name: Run source contracts
+        run: python -m pytest -q

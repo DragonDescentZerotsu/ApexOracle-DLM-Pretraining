@@ -1,6 +1,9 @@
 train: SELFIES-train #doesn't matter actually, override in dataloader.py
 valid: SELFIES-valid #doesn't matter actually, override in dataloader.py
 tokenizer_name_or_path: SELFIES_DIY
-cache_dir: /data1/fangping/dlm/SELFIES/data #doesn't matter actually, override in dataloader.py
+tokenizer_revision: 55e83392264cb998f7aa5014847df29868aefeb8
+cache_dir: ${oc.env:APEXORACLE_DLM_CACHE_DIR,./.cache}
+train_path: ${oc.env:APEXORACLE_DLM_TRAIN_PATH,}
+valid_path: ${oc.env:APEXORACLE_DLM_VALID_PATH,}
 wrap: True
 streaming: False
