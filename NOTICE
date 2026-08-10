@@ -1,0 +1,12 @@
+ApexOracle DLM Pretraining
+Copyright 2025-2026 Tianang Leng and ApexOracle contributors
+
+This repository is derived from the MDLM project by the Kuleshov Group and
+retains the upstream Apache License, Version 2.0.
+
+The multitask regression head records its adaptation from the ChemBERTa
+regression implementation. The IBM materials SELFIES tokenizer is an external
+Apache-2.0 asset and is not redistributed in this Git repository.
+
+ApexOracle portability, validation, and documentation changes are identified
+in docs/PORTABILITY_AUDIT.md.

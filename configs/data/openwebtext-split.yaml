@@ -2,6 +2,6 @@ train: openwebtext-train
 valid: openwebtext-valid
 #tokenizer_name_or_path: gpt2
 #tokenizer_name_or_path: DIY
-cache_dir: /data1/fangping/mdlm/textdiffusion/data
+cache_dir: ${oc.env:APEXORACLE_DLM_CACHE_DIR,./.cache}
 wrap: True
 streaming: False

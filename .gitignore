@@ -1,0 +1,16 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+.cache/
+build/
+dist/
+*.egg-info/
+outputs/
+wandb/
+checkpoints/
+*.ckpt
+*.pt
+*.pth
+*.safetensors
+/data/

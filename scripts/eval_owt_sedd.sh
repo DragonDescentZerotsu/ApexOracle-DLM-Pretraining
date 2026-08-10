@@ -12,7 +12,7 @@
 #SBATCH --open-mode=append            # Do not overwrite logs
 #SBATCH --requeue                     # Requeue upon preemption
 
-checkpoint_path=/share/kuleshov/ssahoo/textdiffusion/text-diffusion-exp-v4-nBm2gE-small-param-sedd_data-openwebtext-split_seqlen-1024_maxs-1300001_bs-512/checkpoints/last.ckpt
+checkpoint_path=${CHECKPOINT_PATH:?Set CHECKPOINT_PATH to the checkpoint to evaluate}
 
 export HYDRA_FULL_ERROR=1
 

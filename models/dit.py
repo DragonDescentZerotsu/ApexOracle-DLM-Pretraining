@@ -1,5 +1,6 @@
 import math
 import typing
+from pathlib import Path
 
 import flash_attn
 import flash_attn.layers.rotary
@@ -220,8 +221,11 @@ class RobertaRegressionHead(nn.Module):
     self.dense = nn.Linear(hidden_size, hidden_size) #768?
     self.dropout = nn.Dropout(hidden_dropout_prob) #0.1?
     self.out_proj = nn.Linear(hidden_size, num_labels)
-    self.mean_stats = torch.FloatTensor(np.load('/data1/fangping/dlm/descriptors_mean.npy')).view(1,-1).to(torch.float32)
-    self.std_stats = torch.FloatTensor(np.load('/data1/fangping/dlm/descriptors_std.npy')).view(1,-1).to(torch.float32)
+    stats_root = Path(__file__).resolve().parents[1]
+    self.mean_stats = torch.FloatTensor(
+      np.load(stats_root / 'descriptors_mean.npy')).view(1, -1).to(torch.float32)
+    self.std_stats = torch.FloatTensor(
+      np.load(stats_root / 'descriptors_std.npy')).view(1, -1).to(torch.float32)
     self.mean_stats.requires_grad = False
     self.std_stats.requires_grad = False
 

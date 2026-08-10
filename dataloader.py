@@ -499,7 +499,11 @@ def get_tokenizer(config):
       from_pretrained('bert-base-uncased')
   elif config.data.tokenizer_name_or_path == 'SELFIES_DIY':
     print ('loading IBM SELFIES tokenizer')
-    tokenizer = transformers.AutoTokenizer.from_pretrained("ibm-research/materials.selfies-ted", cache_dir="/data1/fangping/DLcache", trust_remote_code=True)
+    tokenizer = transformers.AutoTokenizer.from_pretrained(
+      'ibm-research/materials.selfies-ted',
+      revision=config.data.tokenizer_revision,
+      cache_dir=config.data.cache_dir,
+      trust_remote_code=True)
     print ('IBM SELFIES tokenizer vocab_size', len(tokenizer.get_vocab()))
   else:
     tokenizer = transformers.AutoTokenizer.from_pretrained(
@@ -554,9 +558,22 @@ def get_dataloaders(config, tokenizer, skip_train=False,
   if skip_train:
     train_set = None
   else:
-    train_set = datasets.load_from_disk("/data1/fangping2/hf_descriptor_1024_train_test_filtered_padded/train").with_format('torch') #change to your training data path
+    if not config.data.train_path:
+      raise ValueError(
+        'Set data.train_path or APEXORACLE_DLM_TRAIN_PATH to the '
+        'prepared SELFIES training dataset.')
+    train_set = datasets.load_from_disk(
+      config.data.train_path).with_format('torch')
 
-  valid_set = datasets.load_from_disk("/data1/fangping2/hf_descriptor_1024_train_test_filtered_padded/test").with_format('torch')  #change to your valid data path
+  if skip_valid:
+    valid_set = None
+  else:
+    if not config.data.valid_path:
+      raise ValueError(
+        'Set data.valid_path or APEXORACLE_DLM_VALID_PATH to the '
+        'prepared SELFIES validation dataset.')
+    valid_set = datasets.load_from_disk(
+      config.data.valid_path).with_format('torch')
 
 
   #data_collator_train = DataCollatorWithPadding(tokenizer, padding="max_length", max_length=1024, return_tensors="pt")

@@ -1,8 +1,50 @@
-### Train diffusion language model (DLM) on molecular SELFIES
-To train the DLM with the multitask descriptor regression loss on our curated SELFIES data, please use the following command:
+# ApexOracle DLM Pretraining
+
+This repository preserves the collaborator-developed producer for the ApexOracle diffusion language model (DLM) and
+its 209-descriptor multitask regression (MTR) objective. Downstream embedding, guidance, and candidate scoring belong
+to [ApexOracle-MDLM](https://github.com/DragonDescentZerotsu/ApexOracle-MDLM), not this repository.
+
+The implementation is derived from [kuleshov-group/mdlm](https://github.com/kuleshov-group/mdlm) and remains under
+Apache-2.0. The original ApexOracle source is recoverable from the annotated tag
+`legacy-code-snapshot-2026-08-10`; the clean branch intentionally limits changes to portability, validation, and
+documentation.
+
+## Environment
+
+The historical training environment used CUDA 11.8, PyTorch 2.4.1, Lightning 2.2.1, Transformers 4.38.2, and
+FlashAttention 2.6.3. A CUDA-capable Linux environment is required for the DiT training path.
+
+```bash
+python -m pip install -r requirements.txt
+python -m pip install flash-attn==2.6.3 --no-build-isolation
 ```
+
+## Data contract
+
+Training and validation inputs are Hugging Face datasets saved with `datasets.save_to_disk`. Each row must contain:
+
+- `input_ids`: integer SELFIES tokens with shape `[1024]`;
+- `attention_mask`: token mask with shape `[1024]`;
+- `descriptors`: 209 finite RDKit descriptor values.
+
+Set dataset locations explicitly; datasets and checkpoints are not distributed through Git:
+
+```bash
+export APEXORACLE_DLM_TRAIN_PATH=/path/to/prepared/train
+export APEXORACLE_DLM_VALID_PATH=/path/to/prepared/validation
+export APEXORACLE_DLM_CACHE_DIR=/path/to/cache
+```
+
+The IBM SELFIES tokenizer is fixed to revision `55e83392264cb998f7aa5014847df29868aefeb8`. The bundled descriptor
+statistics are part of the model contract and their hashes are recorded in `docs/PORTABILITY_AUDIT.md`.
+
+## Train DLM + MTR
+
+The MTR head consumes 1024-dimensional hidden states, so the documented producer profile is `model=medium`:
+
+```bash
 python main.py \
-  model=small \
+  model=medium \
   data=SELFIES \
   wandb.name=dlm-mtr \
   parameterization=subs \
@@ -10,32 +52,27 @@ python main.py \
   sampling.steps=1000
 ```
 
-### Software version
-```
-torch: 2.4.1+cu118 
-datasets: 2.18.0 
-einops: 0.7.0 
-fsspec: 2024.2.0 
-git-lfs: 1.6 
-h5py: 3.10.0 
-hydra-core: 1.3.2 
-ipdb: 0.13.13 
-lightning: 2.2.1 
-notebook: 7.1.1 
-nvitop: 1.3.2 
-omegaconf: 2.3.0 
-packaging: 23.2 
-pandas: 2.2.1 
-rich: 13.7.1 
-seaborn: 0.13.2 
-scikit-learn: 1.4.0 
-transformers: 4.38.2 
-triton: 2.1.0 
-wandb: 0.13.5 
-flash-attn: 2.6.3 
+This entry preserves the original loss, including the `0.1 × descriptor MSE` term. Dataset preparation and the
+original large-scale checkpoint-producing run are not reconstructed by the synthetic smoke.
+
+## Validation
+
+CPU/source contracts:
+
+```bash
+python -m pytest -q
+python -m compileall -q .
 ```
 
-### Acknowledgements
-This repository was built off of [MDLM](https://github.com/kuleshov-group/mdlm).
+One-step CUDA backbone/MTR train-save-load smoke:
 
+```bash
+python scripts/smoke_train_save_load.py --device cuda:0
+```
 
+See `docs/LEGACY_SNAPSHOT.md` and `docs/PORTABILITY_AUDIT.md` for the exact source boundary and evidence level.
+
+## Acknowledgements
+
+This repository was built from [MDLM](https://github.com/kuleshov-group/mdlm). The regression head notes its adaptation
+from ChemBERTa's multitask regression implementation. See `NOTICE` and `LICENSE`.
