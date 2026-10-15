@@ -70,7 +70,8 @@ One-step CUDA backbone/MTR train-save-load smoke:
 python scripts/smoke_train_save_load.py --device cuda:0
 ```
 
-See `docs/LEGACY_SNAPSHOT.md` for source recovery. The synthetic smoke validates one
+Historical source is available through the `legacy-code-snapshot-2026-08-10` tag.
+The synthetic smoke validates one
 shortened joint-objective training step, save and strict reload; it does not reproduce
 the full pretraining run or its dataset.
 

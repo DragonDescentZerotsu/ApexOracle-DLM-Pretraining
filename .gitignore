@@ -25,3 +25,6 @@ PUBLICATION_HANDOFF.md
 *MANUSCRIPT*PLAN*.md
 .local/
 /docs/PORTABILITY_AUDIT.md
+
+# Local internal records; keep originals outside version control.
+/docs/LEGACY_SNAPSHOT.md
