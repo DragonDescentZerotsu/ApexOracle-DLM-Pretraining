@@ -27,7 +27,7 @@ Training and validation inputs are Hugging Face datasets saved with `datasets.sa
 - `attention_mask`: token mask with shape `[1024]`;
 - `descriptors`: 209 finite RDKit descriptor values.
 
-Set dataset locations explicitly; datasets and checkpoints are not distributed through Git:
+Set dataset locations explicitly:
 
 ```bash
 export APEXORACLE_DLM_TRAIN_PATH=/path/to/prepared/train

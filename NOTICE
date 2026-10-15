@@ -6,7 +6,7 @@ retains the upstream Apache License, Version 2.0.
 
 The multitask regression head records its adaptation from the ChemBERTa
 regression implementation. The IBM materials SELFIES tokenizer is an external
-Apache-2.0 asset and is not redistributed in this Git repository.
+Apache-2.0 asset.
 
-ApexOracle portability, validation, and documentation changes are identified
-in docs/PORTABILITY_AUDIT.md.
+ApexOracle-specific modifications parameterize data and model paths, fix
+tokenizer revisions, and add validation tools. See README.md for usage.
