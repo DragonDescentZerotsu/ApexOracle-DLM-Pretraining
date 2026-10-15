@@ -35,8 +35,8 @@ export APEXORACLE_DLM_VALID_PATH=/path/to/prepared/validation
 export APEXORACLE_DLM_CACHE_DIR=/path/to/cache
 ```
 
-The IBM SELFIES tokenizer is fixed to revision `55e83392264cb998f7aa5014847df29868aefeb8`. The bundled descriptor
-statistics are part of the model contract and their hashes are recorded in `docs/PORTABILITY_AUDIT.md`.
+The IBM SELFIES tokenizer is fixed to revision `55e83392264cb998f7aa5014847df29868aefeb8`.
+The bundled descriptor statistics are part of the model contract.
 
 ## Train DLM + MTR
 
@@ -70,7 +70,9 @@ One-step CUDA backbone/MTR train-save-load smoke:
 python scripts/smoke_train_save_load.py --device cuda:0
 ```
 
-See `docs/LEGACY_SNAPSHOT.md` and `docs/PORTABILITY_AUDIT.md` for the exact source boundary and evidence level.
+See `docs/LEGACY_SNAPSHOT.md` for source recovery. The synthetic smoke validates one
+shortened joint-objective training step, save and strict reload; it does not reproduce
+the full pretraining run or its dataset.
 
 ## Acknowledgements
 
